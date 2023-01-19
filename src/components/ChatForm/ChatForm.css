@@ -1,0 +1,23 @@
+input[type='text'] {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    width: 60%;
+}
+
+input[type='submit'] {
+    border: 1px solid black;
+    border-radius: 3px;
+    background-color: black;
+    color: white;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+input[type='submit']:disabled {
+    border-color: gray;
+    background-color: gray;
+    color: white;
+    cursor: default;
+}
