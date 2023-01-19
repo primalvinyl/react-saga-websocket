@@ -24,7 +24,6 @@ export function* getChatMessageSaga(): Generator {
         // subscribe to channel
         while (true) {
             const payload = yield take(socket as ActionPattern);
-            console.log(payload);
             yield put(putChatMessage({
                 list: [JSON.parse(payload as string)],
                 status: 'connected'
