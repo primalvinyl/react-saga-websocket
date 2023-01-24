@@ -1,7 +1,6 @@
 import { expectSaga } from 'redux-saga-test-plan';
 import * as reducers from './reducers';
 import * as sagas from './sagas';
-import serviceWebSocket from '../serviceWebSocket';
 
 describe('getChatMessageSaga', () => {
     it('starts channel and subscribes', () => {
@@ -34,7 +33,6 @@ describe('sendChatMessageWorker', () => {
             type: 'test',
             payload: mockMessage
         })
-            .call([serviceWebSocket, 'send'], JSON.stringify(mockMessage))
             .put(reducers.putChatMessage({ list: [mockMessage] }))
             .withReducer(reducers.chatMessageReducer)
             .hasFinalState({ list: [mockMessage], status: 'disconnected' })

@@ -1,23 +1,27 @@
-import { ChatMessageType, ChatMessageActionType } from './types';
 import { take, put, call, delay, takeEvery, ActionPattern } from 'redux-saga/effects';
 import { eventChannel, END } from 'redux-saga';
 import { createAction } from '@reduxjs/toolkit';
 import { putChatMessage } from './reducers';
-import serviceWebSocket from '../serviceWebSocket';
+import { ChatMessageType, ChatMessageActionType } from './types';
+
+let serviceWebSocket: WebSocket;
 
 // chat message channel
 export function chatListener() {
     return eventChannel((emitter) => {
-        serviceWebSocket.onmessage = ({ data }) => emitter(data);
+        serviceWebSocket.onmessage = ({ data }: MessageEvent) => emitter(data);
         serviceWebSocket.onclose = () => emitter(END);
         serviceWebSocket.onerror = () => emitter(END);
         return () => serviceWebSocket.close();
     });
 }
 
-// get chat message
+// start websocket and get chat messages
 export function* getChatMessageSaga(): Generator {
     try {
+        // start websocket
+        serviceWebSocket = new WebSocket('ws://localhost:8080/chat');
+
         // start channel
         const socket = yield call(chatListener);
 
@@ -35,6 +39,10 @@ export function* getChatMessageSaga(): Generator {
             list: [{ user: 'Client', text: 'Disconnected from server.' }],
             status: 'disconnected'
         }));
+
+        // try to establish a new connection
+        yield delay(4000);
+        return yield call(getChatMessageSaga);
     }
 }
 
