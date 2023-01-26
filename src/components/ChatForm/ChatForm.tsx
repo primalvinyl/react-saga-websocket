@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
-import { sendChatMessage } from '../../store/chat/sagas';
+import { sendMessage } from '../../store/chat/sagas';
 import './ChatForm.css';
 
 function ChatForm() {
@@ -10,7 +10,7 @@ function ChatForm() {
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        dispatch(sendChatMessage({ user: 'Client', text }));
+        dispatch(sendMessage({ user: 'Client', text }));
         setText('');
     };
 

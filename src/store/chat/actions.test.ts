@@ -1,13 +1,13 @@
 import * as sagas from './sagas';
 import * as mocks from './mocks';
 
-describe('sendChatMessage', () => {
+describe('sendMessage', () => {
     it('returns an action object', () => {
         const expectedResult = {
-            type: sagas.sendChatMessage.toString(),
-            payload: mocks.chatMessageMock,
+            type: sagas.sendMessage.toString(),
+            payload: mocks.messageMock,
         };
-        const actualResult = sagas.sendChatMessage(mocks.chatMessageMock);
+        const actualResult = sagas.sendMessage(mocks.messageMock);
         expect(actualResult).toEqual(expectedResult);
     });
 });

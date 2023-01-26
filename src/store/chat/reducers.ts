@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { chatMessageStoreDefault } from './types';
+import { messageStoreDefault } from './types';
 
-const chatMessage = createSlice({
-    name: 'chatMessage',
-    initialState: chatMessageStoreDefault,
+const message = createSlice({
+    name: 'message',
+    initialState: messageStoreDefault,
     reducers: {
-        putChatMessage: (state , { payload }) => {
+        putMessage: (state , { payload }) => {
             return {
                 list: [...state.list, ...payload.list || []],
                 status: payload.status || state.status,
@@ -14,5 +14,5 @@ const chatMessage = createSlice({
     }
 });
 
-export const { putChatMessage } = chatMessage.actions;
-export const chatMessageReducer = chatMessage.reducer;
+export const { putMessage } = message.actions;
+export const messageReducer = message.reducer;

@@ -2,21 +2,21 @@ import { expectSaga } from 'redux-saga-test-plan';
 import * as reducers from './reducers';
 import * as sagas from './sagas';
 
-describe('getChatMessageSaga', () => {
+describe('webSocketSaga', () => {
     it('starts channel and subscribes', () => {
-        return expectSaga(sagas.getChatMessageSaga)
-            .call(sagas.chatListener)
+        return expectSaga(sagas.webSocketSaga)
+            .call(sagas.webSocketListener)
             .dispatch({ type: 'test' })
             .silentRun();
     });
 
     it('gets and puts data', async () => {
-        return expectSaga(sagas.getChatMessageSaga)
-            .put(reducers.putChatMessage({
+        return expectSaga(sagas.webSocketSaga)
+            .put(reducers.putMessage({
                 list: [{ user: 'Client', text: 'Disconnected from server.' }],
                 status: 'disconnected'
             }))
-            .withReducer(reducers.chatMessageReducer)
+            .withReducer(reducers.messageReducer)
             .hasFinalState({
                 list: [{ user: 'Client', text: 'Disconnected from server.' }],
                 status: 'disconnected'
@@ -25,25 +25,25 @@ describe('getChatMessageSaga', () => {
     });
 });
 
-describe('sendChatMessageWorker', () => {
+describe('sendMessageWorker', () => {
     const mockMessage = { user: 'test', text: 'test' };
 
     it('gets and puts data', () => {
-        return expectSaga(sagas.sendChatMessageWorker, {
+        return expectSaga(sagas.sendMessageWorker, {
             type: 'test',
             payload: mockMessage
         })
-            .put(reducers.putChatMessage({ list: [mockMessage] }))
-            .withReducer(reducers.chatMessageReducer)
+            .put(reducers.putMessage({ list: [mockMessage] }))
+            .withReducer(reducers.messageReducer)
             .hasFinalState({ list: [mockMessage], status: 'disconnected' })
             .run();
     });
 });
 
-describe('sendChatMessageWatcher', () => {
+describe('sendMessageWatcher', () => {
     it('listens for action', () => {
-        return expectSaga(sagas.sendChatMessageWatcher)
-            .dispatch(sagas.sendChatMessage({ user: 'test', text: 'test' }))
+        return expectSaga(sagas.sendMessageWatcher)
+            .dispatch(sagas.sendMessage({ user: 'test', text: 'test' }))
             .silentRun();
     });
 });

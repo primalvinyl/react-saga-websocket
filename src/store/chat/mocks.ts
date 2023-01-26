@@ -1,16 +1,16 @@
 import * as types from './types';
 
-export const chatMessageMock: types.ChatMessageType = {
+export const messageMock: types.MessageType = {
     user: 'test',
     text: 'test',
 };
 
-export const chatMessageStoreMock: types.ChatMessageStoreType = {
-    list: [chatMessageMock],
+export const messageStoreMock: types.messageStoreType = {
+    list: [messageMock],
     status: 'connected',
 }
 
-export const chatMessageActionMock: types.ChatMessageActionType = {
+export const messageActionMock: types.MessageActionType = {
     type: 'test',
-    payload: chatMessageMock,
+    payload: messageMock,
 }

@@ -4,17 +4,17 @@ import * as mocks from './mocks';
 
 describe('chat reducer', () => {
     it('should handle an unknown action', () => {
-        const response = reducers.chatMessageReducer(
+        const response = reducers.messageReducer(
             undefined,
             { type: 'unknown' });
         expect(response).toEqual({ list: [], status: 'disconnected' });
     })
 
     it('should put new chat message', () => {
-        const response = reducers.chatMessageReducer(
+        const response = reducers.messageReducer(
             undefined,
-            reducers.putChatMessage(mocks.chatMessageStoreMock)
+            reducers.putMessage(mocks.messageStoreMock)
         );
-        expect(response).toEqual(mocks.chatMessageStoreMock);
+        expect(response).toEqual(mocks.messageStoreMock);
     });
 });

@@ -23,7 +23,7 @@ describe('WebSocket Saga and Redux Integration', () => {
     })
 
     it('sends messages', async () => {
-        store.dispatch(sagas.sendChatMessage({ user: 'Client', text: 'three' }));
+        store.dispatch(sagas.sendMessage({ user: 'Client', text: 'three' }));
         await expect(mockServer).toReceiveMessage({ user: 'Client', text: 'three' });
         expect(store.getState().messages).toEqual({
             list: [

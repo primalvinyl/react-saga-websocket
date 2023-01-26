@@ -1,15 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import './ChatMessages.css';
+import './messages.css';
 
-function ChatMessages() {
-    const chatMessages = useSelector((state: RootState) => state.messages.list);
+function messages() {
+    const messages = useSelector((state: RootState) => state.messages.list);
 
     return (
         <section>
             <ul>
-                {chatMessages.map((element, index) => (
+                {messages.map((element, index) => (
                     <li key={index}><strong>{element.user}</strong>: {element.text}</li>
                 ))}
             </ul>
@@ -17,4 +17,4 @@ function ChatMessages() {
     );
 }
 
-export default ChatMessages;
+export default messages;

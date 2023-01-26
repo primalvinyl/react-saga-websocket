@@ -1,24 +1,24 @@
-export interface ChatMessageType {
+export interface MessageType {
     user: string;
     text: string;
 }
 
-export const chatMessageDefault: ChatMessageType = {
+export const messageDefault: MessageType = {
     user: '',
     text: '',
 };
 
-export interface ChatMessageStoreType {
-    list: Array<ChatMessageType>;
+export interface messageStoreType {
+    list: Array<MessageType>;
     status: 'connected' | 'disconnected';
 }
 
-export const chatMessageStoreDefault: ChatMessageStoreType = {
+export const messageStoreDefault: messageStoreType = {
     list: [],
     status: 'disconnected',
 };
 
-export interface ChatMessageActionType {
+export interface MessageActionType {
     type: string;
-    payload: ChatMessageType
+    payload: MessageType
 }
