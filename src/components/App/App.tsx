@@ -1,6 +1,6 @@
 import React from 'react';
 import ChatForm from '../ChatForm';
-import messages from '../messages';
+import ChatMessages from '../ChatMessages';
 import './App.css';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
             </header>
             <main>
                 <ChatForm />
-                <messages />
+                <ChatMessages />
             </main>
         </div>
     );

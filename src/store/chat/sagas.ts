@@ -54,7 +54,9 @@ export function* sendMessageWorker({ payload }: MessageActionType): Generator {
         yield put(putMessage({ list: [payload] }));
         yield call([serviceWebSocket, 'send'], JSON.stringify(payload));
     } catch (error) {
-        yield put(putMessage({ list: [{ user: 'Client', text: 'Error sending last message.' }] }));
+        yield put(putMessage({
+            list: [{ user: 'Client', text: 'Error sending last message.' }]
+        }));
     }
 }
 

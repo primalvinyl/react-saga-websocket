@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import './messages.css';
+import './ChatMessages.css';
 
-function messages() {
+function ChatMessages() {
     const messages = useSelector((state: RootState) => state.messages.list);
 
     return (
@@ -17,4 +17,4 @@ function messages() {
     );
 }
 
-export default messages;
+export default ChatMessages;
