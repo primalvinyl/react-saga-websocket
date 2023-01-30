@@ -1,13 +1,10 @@
-import { take, put, call, delay, takeEvery, ActionPattern } from 'redux-saga/effects';
+import { take, put, call, fork, ActionPattern } from 'redux-saga/effects';
 import { eventChannel, END } from 'redux-saga';
 import { createAction } from '@reduxjs/toolkit';
 import { putMessage } from './reducers';
-import { MessageType, MessageActionType } from './types';
+import { MessageType } from './types';
 
-let serviceWebSocket: WebSocket;
-
-// websocket channel
-export function webSocketListener() {
+export function webSocketListener(serviceWebSocket: WebSocket) {
     return eventChannel((emitter) => {
         serviceWebSocket.onmessage = ({ data }: MessageEvent) => emitter(data);
         serviceWebSocket.onclose = () => emitter(END);
@@ -16,50 +13,41 @@ export function webSocketListener() {
     });
 }
 
-// start and subscribe to websocket channel
 export function* webSocketSaga(): Generator {
     try {
-        // start websocket
-        serviceWebSocket = new WebSocket('ws://localhost:8080/chat');
+        // start websocket and channel
+        const serviceWebSocket = new WebSocket('ws://localhost:8080/chat');
+        const socket = yield call(webSocketListener, serviceWebSocket);
 
-        // start channel
-        const socket = yield call(webSocketListener);
+        yield put(putMessage({ status: 'connected' }));
+        yield fork(sendMessageSaga, serviceWebSocket);
 
         // subscribe to channel
         while (true) {
             const payload = yield take(socket as ActionPattern);
-            yield put(putMessage({
-                list: [JSON.parse(payload as string)],
-                status: 'connected'
-            }));
+            yield put(putMessage({ list: [JSON.parse(payload as string)] }));
         }
+
     } finally {
         // channel diconnected
         yield put(putMessage({
             list: [{ user: 'Client', text: 'Disconnected from server.' }],
             status: 'disconnected'
         }));
-
-        // try to establish a new connection
-        yield delay(4000);
-        return yield call(webSocketSaga);
     }
 }
 
-// send websocket message
 export const sendMessage = createAction<MessageType>('chat/sendMessage');
-
-export function* sendMessageWorker({ payload }: MessageActionType): Generator {
-    try {
-        yield put(putMessage({ list: [payload] }));
-        yield call([serviceWebSocket, 'send'], JSON.stringify(payload));
-    } catch (error) {
-        yield put(putMessage({
-            list: [{ user: 'Client', text: 'Error sending last message.' }]
-        }));
+export function* sendMessageSaga(serviceWebSocket: WebSocket) {
+    while (true) {
+        const { payload } = yield take(sendMessage.toString());
+        try {
+            yield put(putMessage({ list: [payload] }));
+            yield call([serviceWebSocket, 'send'], JSON.stringify(payload));
+        } catch (error) {
+            yield put(putMessage({
+                list: [{ user: 'Client', text: 'Error sending last message.' }]
+            }));
+        }
     }
-}
-
-export function* sendMessageWatcher() {
-    yield takeEvery(sendMessage.toString(), sendMessageWorker);
 }

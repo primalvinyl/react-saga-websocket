@@ -1,49 +1,25 @@
-import { expectSaga } from 'redux-saga-test-plan';
-import * as reducers from './reducers';
+import { mockServer } from '../../setupTests';
+import { store } from '..';
 import * as sagas from './sagas';
 
-describe('webSocketSaga', () => {
-    it('starts channel and subscribes', () => {
-        return expectSaga(sagas.webSocketSaga)
-            .call(sagas.webSocketListener)
-            .dispatch({ type: 'test' })
-            .silentRun();
-    });
+describe('WebSocket Sagas', () => {
+    it('gets messages', () => {
+        mockServer.send({ user: 'Server', text: 'test' });
+        expect(store.getState().messages.list).toEqual([{ user: 'Server', text: 'test' }]);
+    })
 
-    it('gets and puts data', async () => {
-        return expectSaga(sagas.webSocketSaga)
-            .put(reducers.putMessage({
-                list: [{ user: 'Client', text: 'Disconnected from server.' }],
-                status: 'disconnected'
-            }))
-            .withReducer(reducers.messageReducer)
-            .hasFinalState({
-                list: [{ user: 'Client', text: 'Disconnected from server.' }],
-                status: 'disconnected'
-            })
-            .silentRun();
-    });
-});
+    it('sends messages', async () => {
+        store.dispatch(sagas.sendMessage({ user: 'Client', text: 'test' }));
+        await expect(mockServer).toReceiveMessage({ user: 'Client', text: 'test' });
+    })
+    
+    it('on connection, status is connected', () => {
+        expect(store.getState().messages.status).toEqual('connected');
+    })
 
-describe('sendMessageWorker', () => {
-    const mockMessage = { user: 'test', text: 'test' };
-
-    it('gets and puts data', () => {
-        return expectSaga(sagas.sendMessageWorker, {
-            type: 'test',
-            payload: mockMessage
-        })
-            .put(reducers.putMessage({ list: [mockMessage] }))
-            .withReducer(reducers.messageReducer)
-            .hasFinalState({ list: [mockMessage], status: 'disconnected' })
-            .run();
-    });
-});
-
-describe('sendMessageWatcher', () => {
-    it('listens for action', () => {
-        return expectSaga(sagas.sendMessageWatcher)
-            .dispatch(sagas.sendMessage({ user: 'test', text: 'test' }))
-            .silentRun();
+    it('on error, status is disconnected', async () => {
+        mockServer.error();
+        await mockServer.closed;
+        expect(store.getState().messages.status).toBe('disconnected');
     });
 });
