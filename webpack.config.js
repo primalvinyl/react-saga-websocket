@@ -28,6 +28,7 @@ module.exports = (env, argv) => {
         mode: mode,
         devServer: {
             port: 3000,
+            historyApiFallback: true,
         },
         resolve: {
             extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
